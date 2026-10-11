@@ -42,6 +42,7 @@ usage: eld-voxels [options]
   --stats FILE         on exit, write the average frame rate to FILE
   --bench N            render N frames, write the terminal stream to stdout,
                        and print timings to stderr
+  -V, --version        print the version
 
 keys (preview mode): n = next act, p = next palette, anything else quits
 ";
@@ -86,6 +87,10 @@ fn parse_args() -> Result<Opts, String> {
         match a.as_str() {
             "-h" | "--help" => {
                 print!("{HELP}");
+                std::process::exit(0);
+            }
+            "-V" | "--version" => {
+                println!("eld-voxels {}", env!("CARGO_PKG_VERSION"));
                 std::process::exit(0);
             }
             "--screensaver" => o.screensaver = true,

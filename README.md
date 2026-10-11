@@ -1,6 +1,6 @@
 # ELD Voxels: an Omarchy screensaver
 
-Version 0.1.0 · MIT licensed · by ELD Technologies
+Version 1.0.0 · [Changelog](CHANGELOG.md) · MIT licensed · by ELD Technologies
 
 The ELD logo as roughly 4,800 voxels, rendered in 3D inside the terminal like
 Omarchy's own screensaver. Each terminal cell shows two truecolor pixels, drawn

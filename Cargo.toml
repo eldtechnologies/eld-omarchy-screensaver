@@ -1,6 +1,6 @@
 [package]
 name = "eld-voxels"
-version = "0.1.0"
+version = "1.0.0"
 license = "MIT"
 edition = "2021"
 description = "3D voxel screensaver for Omarchy, built from the ELD logo"
