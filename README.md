@@ -4,6 +4,10 @@ The ELD logo as roughly 4,800 voxels, rendered in 3D inside the terminal like
 Omarchy's own screensaver. Each terminal cell shows two truecolor pixels, drawn
 with the `▀` half-block character.
 
+**It follows your Omarchy theme.** Every color comes from the active theme's
+`colors.toml`: logo, sky, floor and glow. If you switch themes while it is
+running, it fades to the new colors within a couple of seconds.
+
 ![preview](assets/preview.webp)
 
 Each cycle the logo drops out of the sky and bounces into place, and a sweep of
@@ -27,12 +31,12 @@ new palette:
 - **Duo**: accent to magenta
 - **Aurora**: northern-lights gradient
 
-Everything takes its colors from the **active Omarchy theme**. The screensaver
-checks the theme about once a second, so switching themes while it runs
-crossfades the logo, sky and floor to the new colors within a couple of
-seconds. To preview another theme without switching, point
-`ELD_VOXELS_THEME` at its `colors.toml`. The scene also has a synthwave grid floor with reflections and soft
-shadows, twinkling stars, shooting stars, floating dust, bloom and a vignette.
+Each palette is built from the active theme's colors. The theme is
+re-checked about once a second. To preview another theme without switching
+to it, point `ELD_VOXELS_THEME` at that theme's `colors.toml`.
+
+The scene also has a synthwave grid floor with reflections and soft shadows,
+twinkling stars, shooting stars, floating dust, bloom and a vignette.
 
 ## Install
 
