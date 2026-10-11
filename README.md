@@ -1,5 +1,7 @@
 # ELD Voxels: an Omarchy screensaver
 
+Version 0.1.0 · MIT licensed · by ELD Technologies
+
 The ELD logo as roughly 4,800 voxels, rendered in 3D inside the terminal like
 Omarchy's own screensaver. Each terminal cell shows two truecolor pixels, drawn
 with the `▀` half-block character.
@@ -9,6 +11,9 @@ with the `▀` half-block character.
 running, it fades to the new colors within a couple of seconds.
 
 ![preview](assets/preview.webp)
+
+> **Unofficial.** This is an independent community screensaver. It is not
+> made, endorsed, or supported by the Omarchy project.
 
 Each cycle the logo drops out of the sky and bounces into place, and a sweep of
 light passes across it. Then it plays four random acts:
@@ -136,3 +141,21 @@ eld-voxels --snapshot out.png --at 14 --act globe --size 640x288 --aspect 1.25
 eld-voxels --snapshot f.png --frames 60 --fps 12      # frame sequence
 eld-voxels --bench 300 --size 640x288 > /dev/null     # per-stage timings
 ```
+
+## Disclaimer
+
+This software is provided **as is, without warranty of any kind**, and ELD
+Technologies accepts no liability for any damage or loss arising from its
+use. See [LICENSE](LICENSE) for the full terms. In particular:
+
+- `install.sh` edits your `~/.bash_profile` and your Omarchy menu
+  (`~/.config/omarchy/extensions/omarchy-menu.jsonc`). Its changes are
+  marked, and `uninstall.sh` removes them, but back up both files if you
+  have customized them.
+- The ELD name and logo are trademarks of ELD Technologies. The MIT license
+  covers the code, not the logo. To use the screensaver with your own
+  branding, see [Using a different logo](#using-a-different-logo).
+
+## License
+
+MIT © 2026 ELD Technologies. See [LICENSE](LICENSE).
