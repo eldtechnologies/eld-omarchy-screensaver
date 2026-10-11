@@ -95,7 +95,8 @@ foot's own render timings on a 4K screen:
 
 ## Using a different logo
 
-Any transparent PNG works:
+The voxel layout comes from `assets/eld.mask`, which was generated from
+`assets/eld-logo.png`. Any transparent PNG works:
 
 ```bash
 python3 tools/png2mask.py my-logo.png 72 > assets/eld.mask   # 72 voxels wide
