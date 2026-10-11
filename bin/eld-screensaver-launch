@@ -1,0 +1,79 @@
+#!/bin/bash
+
+# Launch the ELD voxel screensaver on every monitor (stands in for omarchy-launch-screensaver).
+# Usage: eld-screensaver-launch [force]
+
+BIN_DIR=$(dirname "$(readlink -f "$0")")
+DATA_DIR=${XDG_DATA_HOME:-$HOME/.local/share}/eld-voxels
+FONT_SIZE=${ELD_VOXELS_FONT_SIZE:-6}
+FPS=${ELD_VOXELS_FPS:-30}
+
+# Exit early if a screensaver is already running
+pgrep -f '[o]rg.omarchy.screensaver' >/dev/null && exit 0
+
+# Respect Omarchy's screensaver toggle, unless forced
+if omarchy-toggle-enabled screensaver-off && [[ $1 != "force" ]]; then
+  exit 1
+fi
+
+focused=$(omarchy-hyprland-monitor-focused)
+terminal=$(xdg-terminal-exec --print-id)
+
+case $terminal in
+*Alacritty* | *ghostty* | *foot* | *kitty*) ;;
+*)
+  omarchy-notification-send -g ✋ "Screensaver only runs in Alacritty, Foot, Ghostty, or Kitty"
+  exit 1
+  ;;
+esac
+
+hypr_focus_monitor() {
+  hyprctl dispatch "hl.dsp.focus({ monitor = \"$1\" })" >/dev/null 2>&1 || hyprctl dispatch focusmonitor "$1" >/dev/null
+}
+
+hypr_exec() {
+  local command
+  printf -v command '%q ' "$@"
+
+  hyprctl dispatch "hl.dsp.exec_cmd([[$command]])" >/dev/null 2>&1 || hyprctl dispatch exec -- bash -lc "$command" >/dev/null
+}
+
+SOCKET="$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock"
+
+# Listen for openwindow events before spawning, so a fast terminal can't map
+# before we're watching for it.
+exec {events}< <(socat -U - "UNIX-CONNECT:$SOCKET")
+
+# New windows map on whichever monitor is focused, so wait for each
+# screensaver window before moving focus to the next monitor.
+wait_for_screensaver_window() {
+  local line deadline=$((SECONDS + 5))
+  while ((SECONDS < deadline)) && IFS= read -r -t $((deadline - SECONDS)) -u "$events" line; do
+    [[ $line == openwindow\>\>*,org.omarchy.screensaver,* ]] && return 0
+  done
+}
+
+inner="$BIN_DIR/eld-screensaver"
+
+for m in $(hyprctl monitors -j | jq -r '.[] | .name'); do
+  hypr_focus_monitor "$m"
+
+  case $terminal in
+  *Alacritty*)
+    hypr_exec alacritty --class=org.omarchy.screensaver --config-file "$OMARCHY_PATH/default/alacritty/screensaver.toml" -o "font.size=$FONT_SIZE" -e "$inner" --fps "$FPS"
+    ;;
+  *ghostty*)
+    hypr_exec ghostty --class=org.omarchy.screensaver --config-file="$OMARCHY_PATH/default/ghostty/screensaver" --font-size="$FONT_SIZE" -e "$inner" --fps "$FPS"
+    ;;
+  *foot*)
+    hypr_exec foot --app-id=org.omarchy.screensaver --config="$DATA_DIR/foot.ini" -o "main.font=JetBrainsMono Nerd Font:size=$FONT_SIZE" -e "$inner" --fps "$FPS"
+    ;;
+  *kitty*)
+    hypr_exec kitty --class=org.omarchy.screensaver --override font_size="$FONT_SIZE" --override window_padding_width=0 -e "$inner" --fps "$FPS"
+    ;;
+  esac
+
+  wait_for_screensaver_window
+done
+
+hypr_focus_monitor "$focused"

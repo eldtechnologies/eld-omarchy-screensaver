@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# Runs inside the fullscreen screensaver terminal (stands in for omarchy-screensaver).
+# Arguments are passed on to eld-voxels.
+
+BIN_DIR=$(dirname "$(readlink -f "$0")")
+
+exit_screensaver() {
+  hyprctl eval 'hl.config({ cursor = { invisible = false } })' &>/dev/null || hyprctl keyword cursor:invisible false &>/dev/null || true
+  pkill -f '[o]rg.omarchy.screensaver' 2>/dev/null
+  exit 0
+}
+
+trap exit_screensaver SIGINT SIGTERM SIGHUP SIGQUIT
+
+printf '\033]11;rgb:00/00/00\007' # Set background color to black
+
+hyprctl eval 'hl.config({ cursor = { invisible = true } })' &>/dev/null || hyprctl keyword cursor:invisible true &>/dev/null
+
+# The pty starts at 80x24 and is resized once the compositor sizes the window.
+deadline=$((SECONDS + 2))
+while ((SECONDS < deadline)) && [[ $(stty size 2>/dev/null) == "24 80" ]]; do
+  sleep 0.02
+done
+
+"$BIN_DIR/eld-voxels" --screensaver "$@"
+
+exit_screensaver
