@@ -13,6 +13,20 @@ MENU=$HOME/.config/omarchy/extensions/omarchy-menu.jsonc
 BEGIN="# >>> eld-voxels screensaver >>>"
 END="# <<< eld-voxels screensaver <<<"
 
+# Fresh Omarchy installs ship without Rust. Use rustup's cargo if it is
+# installed but not on PATH yet, otherwise install Arch's rust package.
+if ! command -v cargo >/dev/null && [[ -x $HOME/.cargo/bin/cargo ]]; then
+  PATH=$HOME/.cargo/bin:$PATH
+fi
+if ! command -v cargo >/dev/null; then
+  echo "cargo not found: installing Rust with pacman (needs sudo)"
+  if command -v omarchy-pkg-add >/dev/null; then
+    omarchy-pkg-add rust
+  else
+    sudo pacman -S --needed rust
+  fi
+fi
+
 cargo build --release
 
 install -Dm755 target/release/eld-voxels "$BIN/eld-voxels"

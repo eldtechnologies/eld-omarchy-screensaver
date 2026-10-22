@@ -45,7 +45,9 @@ twinkling stars, shooting stars, floating dust, bloom and a vignette.
 
 ## Install
 
-Needs Rust (`cargo`), which Omarchy already has.
+Needs Rust (`cargo`). If it is missing, as on a fresh Omarchy install, the
+script installs Arch's `rust` package with pacman (it asks for your sudo
+password).
 
 ```bash
 ./install.sh
