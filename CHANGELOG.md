@@ -3,6 +3,11 @@
 All notable changes to this screensaver. The version is set in `Cargo.toml`;
 `eld-voxels --version` reads it from there.
 
+## 1.0.1 — 2026-10-23
+
+- `install.sh` installs Rust when `cargo` is missing, as on a fresh Omarchy
+  install, instead of failing with "cargo: command not found".
+
 ## 1.0.0 — 2026-10-11
 
 First release.
